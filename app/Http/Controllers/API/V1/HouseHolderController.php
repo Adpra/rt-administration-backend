@@ -1,41 +1,45 @@
 <?php
 
-namespace App\Http\Controllers\API\V1;
+namespace App\Http\Controllers\API\v1;
 
 use App\Helpers\MediaHelper;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\V1\UserRequest;
-use App\Http\Resources\V1\UserResource;
-use App\Models\User;
+use App\Http\Requests\V1\HouseHolderRequest;
+use App\Http\Resources\v1\HouseHolderResource;
+use App\Models\HouseHolder;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 
-class UserController extends Controller
+class HouseHolderController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
     {
-
-        $this->authorize('viewAny', User::class);
-
         $code = Response::HTTP_OK;
         $success = true;
         $message = __('messages.data_list');
         $perPage = $request->per_page ?? 15;
         $page = $request->page ?? 1;
 
+        $user = auth('api')->user();
 
         try {
-            $users = User::query()
+
+            $user = auth('api')->user();
+
+            $houseHolders = HouseHolder::query()
                 ->latest('created_at');
-                // ->where('is_admin', '=', auth('api')->user()->is_admin ? true : false);
 
-            $users = $users->paginate($perPage, ['*'], 'page', $page);
+            if ($user && !$user->is_admin) {
+                $houseHolders = $houseHolders->where('house_id', $user->house->id);
+            }
 
-            return UserResource::collection($users)
+            $houseHolders = $houseHolders->paginate($perPage, ['*'], 'page', $page);
+
+            return HouseHolderResource::collection($houseHolders)
                 ->additional(
                     [
                         'code' => $code,
@@ -60,24 +64,27 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(UserRequest $request)
+    public function store(HouseHolderRequest $request)
     {
+        $this->authorize('create', HouseHolder::class);
         $code = Response::HTTP_CREATED;
         $success = true;
         $message = __('messages.data_saved');
+        $user = auth('api')->user();
 
         try {
-            $user = User::create(
+            $houseHolder = HouseHolder::create(
                 [
                     'name' => $request->name,
-                    'email' => $request->email,
-                    'password' => bcrypt($request->password),
-                    'image' => MediaHelper::handleUploadImage($request->image),
-                    'is_admin' => $request->is_admin,
+                    'photo_ktp' => MediaHelper::handleUploadImage($request->photo_ktp),
+                    'status' => $request->status,
+                    'marital_status' => $request->marital_status,
+                    'phone' => $request->phone,
+                    'house_id' => $user->is_admin ? $request->house_id : $user->house->id,
                 ]
             );
 
-            return UserResource::make($user)
+            return HouseHolderResource::make($houseHolder)
                 ->additional(
                     [
                         'code' => $code,
@@ -103,15 +110,16 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(User $user)
+    public function show(HouseHolder $householder)
     {
+        $this->authorize('view', $householder);
+
         $code = Response::HTTP_OK;
         $success = true;
         $message = __('messages.data_displayed');
 
         try {
-
-            return UserResource::make($user)
+            return HouseHolderResource::make($householder)
                 ->additional([
                     'code' => $code,
                     'success' => $success,
@@ -121,36 +129,37 @@ class UserController extends Controller
             Log::error($th->getMessage());
             $code = Response::HTTP_INTERNAL_SERVER_ERROR;
 
-            return response()->json(
-                [
-                    'success' => false,
-                    'message' => $th->getMessage()
-                ],
-                $code
-            );
+            return response()->json([
+                'success' => false,
+                'message' => $th->getMessage()
+            ], $code);
         }
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UserRequest $request, User $user)
+    public function update(HouseHolderRequest $request, HouseHolder $householder)
     {
+        $this->authorize('update', $householder);
+
         $code = Response::HTTP_OK;
         $success = true;
         $message = __('messages.data_saved');
+        $user = auth('api')->user();
 
         try {
 
-            $user->update([
+            $householder->update([
                 'name' => $request->name,
-                'email' => $request->email,
-                'password' => bcrypt($request->password),
-                'image' => MediaHelper::handleUploadImage(image: $request->image, oldFile: $user->image),
-                'is_admin' => $request->is_admin
+                'photo_ktp' => MediaHelper::handleUploadImage($request->photo_ktp),
+                'status' => $request->status,
+                'marital_status' => $request->marital_status,
+                'phone' => $request->phone,
+                'house_id' => $user->is_admin ? $request->house_id : $user->house->id,
             ]);
 
-            return UserResource::make($user)
+            return HouseHolderResource::make($householder)
                 ->additional([
                     'code' => $code,
                     'success' => $success,
@@ -170,14 +179,15 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(User $user)
+    public function destroy(HouseHolder $householder)
     {
+        $this->authorize('delete', $householder);
         $code = Response::HTTP_OK;
         $success = true;
         $message = __('messages.data_deleted');
 
         try {
-            $user->delete();
+            $householder->delete();
         } catch (\Throwable $th) {
 
             Log::error($th->getMessage());

@@ -1,25 +1,23 @@
 <?php
 
-namespace App\Http\Controllers\API\V1;
+namespace App\Http\Controllers\API\v1;
 
-use App\Helpers\MediaHelper;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\V1\UserRequest;
-use App\Http\Resources\V1\UserResource;
-use App\Models\User;
+use App\Http\Requests\V1\HouseRequest;
+use App\Http\Resources\v1\HouseResource;
+use App\Models\House;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 
-class UserController extends Controller
+class HouseController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
     {
-
-        $this->authorize('viewAny', User::class);
+        $this->authorize('viewAny', House::class);
 
         $code = Response::HTTP_OK;
         $success = true;
@@ -27,15 +25,20 @@ class UserController extends Controller
         $perPage = $request->per_page ?? 15;
         $page = $request->page ?? 1;
 
-
         try {
-            $users = User::query()
+
+            $user = auth('api')->user();
+
+            $houses = House::query()
                 ->latest('created_at');
-                // ->where('is_admin', '=', auth('api')->user()->is_admin ? true : false);
 
-            $users = $users->paginate($perPage, ['*'], 'page', $page);
+            if ($user && !$user->is_admin) {
+                $houses = $houses->where('user_id', $user->id);
+            }
 
-            return UserResource::collection($users)
+            $houses = $houses->paginate($perPage, ['*'], 'page', $page);
+
+            return HouseResource::collection($houses)
                 ->additional(
                     [
                         'code' => $code,
@@ -55,29 +58,31 @@ class UserController extends Controller
                 $code
             );
         }
+
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(UserRequest $request)
+    public function store(HouseRequest $request)
     {
+        $this->authorize('create', House::class);
+
         $code = Response::HTTP_CREATED;
         $success = true;
         $message = __('messages.data_saved');
 
         try {
-            $user = User::create(
+            $house = House::create(
                 [
-                    'name' => $request->name,
-                    'email' => $request->email,
-                    'password' => bcrypt($request->password),
-                    'image' => MediaHelper::handleUploadImage($request->image),
-                    'is_admin' => $request->is_admin,
+                    'no' => $request->no,
+                    'description' => $request->description,
+                    'status' => $request->status,
+                    'user_id' => $request->user_id,
                 ]
             );
 
-            return UserResource::make($user)
+            return HouseResource::make($house)
                 ->additional(
                     [
                         'code' => $code,
@@ -103,15 +108,17 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(User $user)
+    public function show(House $house)
     {
+        $this->authorize('view', $house);
+
         $code = Response::HTTP_OK;
         $success = true;
         $message = __('messages.data_displayed');
 
         try {
 
-            return UserResource::make($user)
+            return HouseResource::make($house)
                 ->additional([
                     'code' => $code,
                     'success' => $success,
@@ -134,23 +141,24 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UserRequest $request, User $user)
+    public function update(HouseRequest $request, House $house)
     {
+        $this->authorize('update', $house);
+
         $code = Response::HTTP_OK;
         $success = true;
         $message = __('messages.data_saved');
 
         try {
 
-            $user->update([
-                'name' => $request->name,
-                'email' => $request->email,
-                'password' => bcrypt($request->password),
-                'image' => MediaHelper::handleUploadImage(image: $request->image, oldFile: $user->image),
-                'is_admin' => $request->is_admin
+            $house->update([
+                'no' => $request->no,
+                'description' => $request->description,
+                'status' => $request->status,
+                'user_id' => $request->user_id,
             ]);
 
-            return UserResource::make($user)
+            return HouseResource::make($house)
                 ->additional([
                     'code' => $code,
                     'success' => $success,
@@ -170,14 +178,16 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(User $user)
+    public function destroy(House $house)
     {
+        $this->authorize('delete', $house);
+
         $code = Response::HTTP_OK;
         $success = true;
         $message = __('messages.data_deleted');
 
         try {
-            $user->delete();
+            $house->delete();
         } catch (\Throwable $th) {
 
             Log::error($th->getMessage());

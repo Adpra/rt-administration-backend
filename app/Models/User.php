@@ -65,4 +65,8 @@ class User extends Authenticatable implements JWTSubject
     {
         return [];
     }
+
+    public function house(){
+        return $this->belongsTo(House::class, 'id', 'user_id');
+    }
 }

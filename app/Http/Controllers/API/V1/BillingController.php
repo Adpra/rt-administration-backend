@@ -1,41 +1,45 @@
 <?php
 
-namespace App\Http\Controllers\API\V1;
+namespace App\Http\Controllers\API\v1;
 
-use App\Helpers\MediaHelper;
+use App\Enums\BillingStatusEnum;
+use App\Enums\TransactionStatusEnum;
+use App\Enums\TransactionTypeEnum;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\V1\UserRequest;
-use App\Http\Resources\V1\UserResource;
-use App\Models\User;
+use App\Http\Requests\V1\BillingRequest;
+use App\Http\Resources\v1\BillingResource;
+use App\Models\Billing;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 
-class UserController extends Controller
+class BillingController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
     {
-
-        $this->authorize('viewAny', User::class);
-
         $code = Response::HTTP_OK;
         $success = true;
         $message = __('messages.data_list');
         $perPage = $request->per_page ?? 15;
         $page = $request->page ?? 1;
 
+        $user = auth('api')->user();
 
         try {
-            $users = User::query()
+
+            $user = auth('api')->user();
+
+            $billings = Billing::query()
                 ->latest('created_at');
-                // ->where('is_admin', '=', auth('api')->user()->is_admin ? true : false);
 
-            $users = $users->paginate($perPage, ['*'], 'page', $page);
+            $billings = $this->shouldExcludeTypeOfPayment($user, $billings);
 
-            return UserResource::collection($users)
+            $billings = $billings->paginate($perPage, ['*'], 'page', $page);
+
+            return BillingResource::collection($billings)
                 ->additional(
                     [
                         'code' => $code,
@@ -60,24 +64,26 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(UserRequest $request)
+    public function store(BillingRequest $request)
     {
+        $this->authorize('create', Billing::class);
+
         $code = Response::HTTP_CREATED;
         $success = true;
         $message = __('messages.data_saved');
+        $user = auth('api')->user();
 
         try {
-            $user = User::create(
+            $houseHolder = Billing::create(
                 [
-                    'name' => $request->name,
-                    'email' => $request->email,
-                    'password' => bcrypt($request->password),
-                    'image' => MediaHelper::handleUploadImage($request->image),
-                    'is_admin' => $request->is_admin,
+                    'type' => $request->type,
+                    'description' => $request->description,
+                    'amount' => $request->amount,
+                    'status' => $request->status,
                 ]
             );
 
-            return UserResource::make($user)
+            return BillingResource::make($houseHolder)
                 ->additional(
                     [
                         'code' => $code,
@@ -103,54 +109,15 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(User $user)
+    public function show(Billing $billing)
     {
+        
         $code = Response::HTTP_OK;
         $success = true;
         $message = __('messages.data_displayed');
 
         try {
-
-            return UserResource::make($user)
-                ->additional([
-                    'code' => $code,
-                    'success' => $success,
-                    'message' => $message,
-                ]);
-        } catch (\Throwable $th) {
-            Log::error($th->getMessage());
-            $code = Response::HTTP_INTERNAL_SERVER_ERROR;
-
-            return response()->json(
-                [
-                    'success' => false,
-                    'message' => $th->getMessage()
-                ],
-                $code
-            );
-        }
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UserRequest $request, User $user)
-    {
-        $code = Response::HTTP_OK;
-        $success = true;
-        $message = __('messages.data_saved');
-
-        try {
-
-            $user->update([
-                'name' => $request->name,
-                'email' => $request->email,
-                'password' => bcrypt($request->password),
-                'image' => MediaHelper::handleUploadImage(image: $request->image, oldFile: $user->image),
-                'is_admin' => $request->is_admin
-            ]);
-
-            return UserResource::make($user)
+            return BillingResource::make($billing)
                 ->additional([
                     'code' => $code,
                     'success' => $success,
@@ -168,16 +135,58 @@ class UserController extends Controller
     }
 
     /**
+     * Update the specified resource in storage.
+     */
+    public function update(BillingRequest $request, Billing $billing)
+    {
+        $this->authorize('update', $billing);
+        
+        $code = Response::HTTP_OK;
+        $success = true;
+        $message = __('messages.data_saved');
+        $user = auth('api')->user();
+
+        try {
+
+            $billing->update([
+                'type' => $request->type,
+                'description' => $request->description,
+                'amount' => $request->amount,
+                'status' => $request->status,
+                ]
+            );
+
+            return BillingResource::make($billing)
+                ->additional([
+                    'code' => $code,
+                    'success' => $success,
+                    'message' => $message,
+                ]
+            );
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+            $code = Response::HTTP_INTERNAL_SERVER_ERROR;
+
+            return response()->json([
+                'success' => false,
+                'message' => $th->getMessage()
+            ], $code);
+        }
+    }
+
+    /**
      * Remove the specified resource from storage.
      */
-    public function destroy(User $user)
+    public function destroy(Billing $billing)
     {
+        $this->authorize('delete', $billing);
+
         $code = Response::HTTP_OK;
         $success = true;
         $message = __('messages.data_deleted');
 
         try {
-            $user->delete();
+            $billing->delete();
         } catch (\Throwable $th) {
 
             Log::error($th->getMessage());
@@ -191,5 +200,23 @@ class UserController extends Controller
             'success' => $success,
             'message' => $message,
         ], $code);
+    }
+
+   private function shouldExcludeTypeOfPayment($user, $billings)
+    {
+        if (!$user || $user->is_admin || !$user->house) {
+            return $billings;
+        }
+
+        $billings = $billings->whereDoesntHave('transactions', function ($query) use ($user) {
+            $query->where('status', TransactionStatusEnum::PAID)
+                ->where('house_id', $user->house->id);
+        });
+
+        if ($user->house->transactions()->where('type', TransactionTypeEnum::TAHUNAN)->where('next_billing_date', '>=', now())->exists()) {
+            $billings = $billings->where('status', '!=', BillingStatusEnum::KEBERSIHAN);
+        }
+
+        return $billings;
     }
 }

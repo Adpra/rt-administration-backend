@@ -1,7 +1,13 @@
 <?php
 
 use App\Http\Controllers\API\V1\AuthController;
+use App\Http\Controllers\API\v1\BillingController;
+use App\Http\Controllers\API\v1\HouseController;
 use App\Http\Controllers\API\V1\UserController;
+use App\Http\Controllers\API\V1\HouseHolderController;
+use App\Http\Controllers\API\v1\ReportFinancialDetailController;
+use App\Http\Controllers\API\v1\ReportFinancialSummaryController;
+use App\Http\Controllers\API\v1\TransactionHistoryController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -40,4 +46,13 @@ Route::name('v1.')
         Route::get('me', [AuthController::class, 'me']);
 
         Route::apiResource('users', UserController::class);
+        Route::apiResource('houses', HouseController::class);
+        Route::apiResource('householders', HouseHolderController::class);
+        Route::apiResource('billings', BillingController::class);
+        Route::apiResource('transaction-histories', TransactionHistoryController::class);
+
+        Route::apiResource('financial-report-detail', ReportFinancialDetailController::class);
+        Route::apiResource('financial-report-summaries', ReportFinancialSummaryController::class);
+
+
     });
