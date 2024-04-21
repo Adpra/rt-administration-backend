@@ -13,7 +13,7 @@ class TransactionHistoryPolicy
      */
     public function viewAny(User $user): bool
     {
-        //
+        return false;
     }
 
     /**
@@ -21,7 +21,12 @@ class TransactionHistoryPolicy
      */
     public function view(User $user, TransactionHistory $transactionHistory): bool
     {
-        //
+        if ($user->is_admin) {
+            return true;
+        }
+    
+        return $transactionHistory->house_id === $user->house->id;
+
     }
 
     /**
@@ -29,7 +34,7 @@ class TransactionHistoryPolicy
      */
     public function create(User $user): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -37,7 +42,7 @@ class TransactionHistoryPolicy
      */
     public function update(User $user, TransactionHistory $transactionHistory): bool
     {
-        //
+        return false;
     }
 
     /**
@@ -45,7 +50,7 @@ class TransactionHistoryPolicy
      */
     public function delete(User $user, TransactionHistory $transactionHistory): bool
     {
-        //
+        return $user->is_admin;
     }
 
     /**
@@ -53,7 +58,7 @@ class TransactionHistoryPolicy
      */
     public function restore(User $user, TransactionHistory $transactionHistory): bool
     {
-        //
+        return false;
     }
 
     /**
@@ -61,6 +66,6 @@ class TransactionHistoryPolicy
      */
     public function forceDelete(User $user, TransactionHistory $transactionHistory): bool
     {
-        //
+        return false;
     }
 }

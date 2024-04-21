@@ -22,4 +22,8 @@ class HouseHolder extends Model
     public function house(){
         return $this->belongsTo(House::class, 'house_id', 'id');
     }
+
+    public function enum(){
+        return $this->belongsTo(Enum::class, 'status', 'id')->where('type', 'householder_status');
+    }
 }

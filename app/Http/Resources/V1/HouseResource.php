@@ -24,8 +24,7 @@ class HouseResource extends JsonResource
             'description' => $house->description,
             'status' => $house->status,
             'user_id' => $house->user_id,
-            'next_billing_date' => $house->next_billing_date,
-            'billing_date_expired' => $house->billing_date_expired,
+            'status_name' => $house->enum->name,
             'house_holders' => $this->when($request->route()->getActionMethod() === 'show', HouseHolderResource::collection($house->houseHolders)),
         ];
     }

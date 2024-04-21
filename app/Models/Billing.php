@@ -21,4 +21,8 @@ class Billing extends Model
         return $this->hasMany(TransactionHistory::class);
     }
 
+    public function enum(){
+        return $this->belongsTo(Enum::class, 'status', 'id')->where('type', 'billing_status');
+    }
+
 }

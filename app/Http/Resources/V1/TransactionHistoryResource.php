@@ -2,6 +2,8 @@
 
 namespace App\Http\Resources\v1;
 
+use App\Enums\TransactionStatusEnum;
+use App\Enums\TransactionTypeEnum;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -21,11 +23,10 @@ class TransactionHistoryResource extends JsonResource
         return [
             'type' => $transactionHistory->type,
             'status' => $transactionHistory->status,
+            'status_name' => $transactionHistory->enum->name,
             'amount' => $transactionHistory->amount,
             'description' => $transactionHistory->description,
-            'house_id' => $transactionHistory->house_id,
-            'householder_id' => $transactionHistory->householder_id,
-            'billing_id' => $transactionHistory->billing_id,
+            'payment_return_date' => $this->when($transactionHistory->type === TransactionTypeEnum::TAHUNAN && $transactionHistory->status === TransactionStatusEnum::PAID, $this->created_at->addYear()->format('Y-m-d H:i:s')),
             'created_at' => $transactionHistory->created_at?->format('d-m-Y H:i:s'),
             'updated_at' => $transactionHistory->updated_at?->format('d-m-Y H:i:s'),
         ];

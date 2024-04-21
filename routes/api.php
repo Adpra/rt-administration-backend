@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\API\V1\AuthController;
 use App\Http\Controllers\API\v1\BillingController;
+use App\Http\Controllers\API\v1\EnumController;
 use App\Http\Controllers\API\v1\HouseController;
 use App\Http\Controllers\API\V1\UserController;
 use App\Http\Controllers\API\V1\HouseHolderController;
@@ -53,6 +54,7 @@ Route::name('v1.')
 
         Route::apiResource('financial-report-detail', ReportFinancialDetailController::class);
         Route::apiResource('financial-report-summaries', ReportFinancialSummaryController::class);
+        Route::apiResource('enums', EnumController::class);
 
 
     });

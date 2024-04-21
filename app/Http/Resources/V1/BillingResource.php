@@ -23,6 +23,7 @@ class BillingResource extends JsonResource
             'type' => $billing->type,
             'amount' => $billing->amount,
             'description' => $billing->description,
+            'status_name' => $billing->enum->name,
             'status' => $billing->status,
             'created_at' => $billing->created_at?->format('d-m-Y H:i:s'),
             'updated_at' => $billing->updated_at?->format('d-m-Y H:i:s'),

@@ -65,6 +65,8 @@ class TransactionHistoryController extends Controller
      */
     public function store(TransactionHistoryRequest $request)
     {
+        $this->authorize('create', TransactionHistory::class);
+
         $code = Response::HTTP_CREATED;
         $success = true;
         $message = __('messages.data_saved');
@@ -112,6 +114,8 @@ class TransactionHistoryController extends Controller
      */
     public function show(TransactionHistory $transactionHistory)
     {
+        $this->authorize('view', $transactionHistory);
+        
         $code = Response::HTTP_OK;
         $success = true;
         $message = __('messages.data_displayed');
@@ -139,7 +143,8 @@ class TransactionHistoryController extends Controller
      */
     public function update(TransactionHistoryRequest $request, TransactionHistory $transactionHistory)
     {
-        
+        $this->authorize('update', $transactionHistory);
+
         $code = Response::HTTP_OK;
         $success = true;
         $message = __('messages.data_saved');
@@ -181,6 +186,8 @@ class TransactionHistoryController extends Controller
      */
     public function destroy(TransactionHistory $transactionHistory)
     {
+        $this->authorize('delete', $transactionHistory);
+
         $code = Response::HTTP_OK;
         $success = true;
         $message = __('messages.data_deleted');

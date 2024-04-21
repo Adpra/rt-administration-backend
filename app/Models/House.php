@@ -27,4 +27,8 @@ class House extends Model
         return $this->hasMany(TransactionHistory::class);
     }
 
+    public function enum(){
+        return $this->belongsTo(Enum::class, 'status', 'id')->where('type', 'house_status');
+    }
+
 }

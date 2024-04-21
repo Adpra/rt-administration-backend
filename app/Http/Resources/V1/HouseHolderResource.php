@@ -22,6 +22,7 @@ class HouseHolderResource extends JsonResource
             'id' => $houseHolder->id,
             'name' => $houseHolder->name,
             'photo_ktp' => $houseHolder->photo_ktp,
+            'status_name' => $houseHolder->enum->name,
             'status' => $houseHolder->status,
             'marital_status' => $houseHolder->marital_status,
             'phone' => $houseHolder->phone,

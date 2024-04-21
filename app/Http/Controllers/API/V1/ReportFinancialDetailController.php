@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API\v1;
 
+use App\Enums\StatusEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\v1\TransactionHistoryResource;
 use App\Models\TransactionHistory;
@@ -17,13 +18,13 @@ class ReportFinancialDetailController extends Controller
     {
         $month = $request->has('month') ? $request->month : Carbon::now()->month;
     
-        $incomeHistory = TransactionHistory::where('status', 1)
+        $incomeHistory = TransactionHistory::where('status', StatusEnum::LUNAS)
             ->whereYear('created_at', Carbon::now()->year)
             ->whereMonth('created_at', $month)
             ->whereNotIn('type', ['PENGELUARAN'])
             ->get();
     
-        $expenseHistory = TransactionHistory::where('status', 1)
+        $expenseHistory = TransactionHistory::where('status', StatusEnum::LUNAS)
             ->whereYear('created_at', Carbon::now()->year)
             ->whereMonth('created_at', $month)
             ->whereIn('type', ['PENGELUARAN'])

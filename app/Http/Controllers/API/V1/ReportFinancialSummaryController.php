@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API\v1;
 
+use App\Enums\StatusEnum;
 use App\Http\Controllers\Controller;
 use App\Models\TransactionHistory;
 use Carbon\Carbon;
@@ -18,13 +19,13 @@ class ReportFinancialSummaryController extends Controller
         $totalBalance = 0;
     
         for ($i = 1; $i <= 12; $i++) {
-            $incomeHistory = TransactionHistory::where('status', 1)
+            $incomeHistory = TransactionHistory::where('status', StatusEnum::LUNAS)
                 ->whereYear('created_at', Carbon::now()->year)
                 ->whereMonth('created_at', $i)
                 ->whereNotIn('type', ['PENGELUARAN'])
                 ->sum('amount');
     
-            $expenseHistory = TransactionHistory::where('status', 1)
+            $expenseHistory = TransactionHistory::where('status', StatusEnum::LUNAS)
                 ->whereYear('created_at', Carbon::now()->year)
                 ->whereMonth('created_at', $i)
                 ->whereIn('type', ['PENGELUARAN'])

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\API\v1;
 
-use App\Enums\BillingStatusEnum;
+use App\Enums\StatusEnum;
 use App\Enums\TransactionStatusEnum;
 use App\Enums\TransactionTypeEnum;
 use App\Http\Controllers\Controller;
@@ -209,12 +209,12 @@ class BillingController extends Controller
         }
 
         $billings = $billings->whereDoesntHave('transactions', function ($query) use ($user) {
-            $query->where('status', TransactionStatusEnum::PAID)
+            $query->where('status', StatusEnum::LUNAS)
                 ->where('house_id', $user->house->id);
         });
 
         if ($user->house->transactions()->where('type', TransactionTypeEnum::TAHUNAN)->where('next_billing_date', '>=', now())->exists()) {
-            $billings = $billings->where('status', '!=', BillingStatusEnum::KEBERSIHAN);
+            $billings = $billings->where('status', '!=', StatusEnum::KEBERSIHAN);
         }
 
         return $billings;

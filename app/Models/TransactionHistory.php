@@ -28,4 +28,8 @@ class TransactionHistory extends Model
     public function house(){
         return $this->belongsTo(House::class);
     }
+
+    public function enum(){
+        return $this->belongsTo(Enum::class, 'status', 'id')->where('type', 'transaction_status');
+    }
 }
