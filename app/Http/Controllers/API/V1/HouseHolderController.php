@@ -149,12 +149,12 @@ class HouseHolderController extends Controller
         $user = auth('api')->user();
 
         try {
-
+           
             $householder->update([
                 'name' => $request->name,
-                'photo_ktp' => MediaHelper::handleUploadImage($request->photo_ktp),
+                'photo_ktp' =>  MediaHelper::handleUploadImage($request->photo_ktp, 'images', null,$householder),
                 'status' => $request->status,
-                'marital_status' => $request->marital_status,
+                'marital_status' => $request->marital_status, 
                 'phone' => $request->phone,
                 'house_id' => $user->is_admin ? $request->house_id : $user->house->id,
             ]);

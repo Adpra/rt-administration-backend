@@ -21,6 +21,7 @@ class BillingResource extends JsonResource
         return [
             'id' => $billing->id,
             'type' => $billing->type,
+            'type_name' => $billing->typeStatus->name,
             'amount' => $billing->amount,
             'description' => $billing->description,
             'status_name' => $billing->enum->name,

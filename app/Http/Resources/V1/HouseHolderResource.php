@@ -4,6 +4,7 @@ namespace App\Http\Resources\v1;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
 class HouseHolderResource extends JsonResource
 {
@@ -27,7 +28,7 @@ class HouseHolderResource extends JsonResource
             'marital_status' => $houseHolder->marital_status,
             'phone' => $houseHolder->phone,
             'house_id' => $houseHolder->house_id,
-            'house_no' => $this->house->no,
+            'house_name' => $this->house->name,
         ];
     }
 }

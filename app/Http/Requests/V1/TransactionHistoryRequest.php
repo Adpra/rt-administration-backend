@@ -26,7 +26,6 @@ class TransactionHistoryRequest extends FormRequest
                 'type' => 'required|max:255',
                 'status' => 'required|numeric',
                 'amount' => 'required|numeric',
-                'description' => 'required|max:255',
             ];
         }
 
@@ -35,7 +34,6 @@ class TransactionHistoryRequest extends FormRequest
                 'type' => 'required|max:255',
                 'status' => 'required|numeric',
                 'amount' => 'required|numeric',
-                'description' => 'required|max:255',
 
             ];
         }

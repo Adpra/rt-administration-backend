@@ -11,12 +11,10 @@ class House extends Model
     use HasFactory , SoftDeletes;
 
     protected $fillable = [
-        'no',
+        'name',
         'description',
         'status',
         'user_id',
-        'next_billing_date',
-        'billing_date_expired'
     ];
 
     public function houseHolders(){

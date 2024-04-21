@@ -23,7 +23,7 @@ class BillingRequest extends FormRequest
     {
         if (request()->isMethod('POST')) {
             $rules = [
-                'type' => 'required|max:255',
+                // 'type' => 'required|numeric',
                 'amount' => 'required|numeric',
                 'description' => 'required|max:255',
                 'status' => 'required|numeric',
@@ -32,7 +32,7 @@ class BillingRequest extends FormRequest
 
         if (request()->isMethod('PUT')) {
             $rules = [
-                'type' => 'required|max:255',
+                // 'type' => 'required|numeric',
                 'amount' => 'required|numeric',
                 'description' => 'required|max:255',
                 'status' => 'required|numeric',

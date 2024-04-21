@@ -25,4 +25,8 @@ class Billing extends Model
         return $this->belongsTo(Enum::class, 'status', 'id')->where('type', 'billing_status');
     }
 
+    public function typeStatus(){
+        return $this->belongsTo(Enum::class, 'type', 'id')->where('type', 'type_transaction');
+    }
+
 }

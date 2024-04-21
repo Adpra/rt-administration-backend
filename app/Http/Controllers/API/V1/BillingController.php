@@ -74,16 +74,16 @@ class BillingController extends Controller
         $user = auth('api')->user();
 
         try {
-            $houseHolder = Billing::create(
+            $billing = Billing::create(
                 [
-                    'type' => $request->type,
+                    'type' => StatusEnum::BULANAN,
                     'description' => $request->description,
                     'amount' => $request->amount,
                     'status' => $request->status,
                 ]
             );
 
-            return BillingResource::make($houseHolder)
+            return BillingResource::make($billing)
                 ->additional(
                     [
                         'code' => $code,
@@ -149,7 +149,7 @@ class BillingController extends Controller
         try {
 
             $billing->update([
-                'type' => $request->type,
+                'type' => StatusEnum::BULANAN,
                 'description' => $request->description,
                 'amount' => $request->amount,
                 'status' => $request->status,
@@ -213,7 +213,7 @@ class BillingController extends Controller
                 ->where('house_id', $user->house->id);
         });
 
-        if ($user->house->transactions()->where('type', TransactionTypeEnum::TAHUNAN)->where('next_billing_date', '>=', now())->exists()) {
+        if ($user->house->transactions()->where('type', StatusEnum::TAHUNAN)->where('next_billing_date', '>=', now())->exists()) {
             $billings = $billings->where('status', '!=', StatusEnum::KEBERSIHAN);
         }
 

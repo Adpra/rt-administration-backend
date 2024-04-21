@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('transaction_histories', function (Blueprint $table) {
             $table->id();
-            $table->string('type');
+            $table->tinyInteger('type');
             $table->tinyInteger('status');
             $table->float('amount');
             $table->string('description')->nullable();

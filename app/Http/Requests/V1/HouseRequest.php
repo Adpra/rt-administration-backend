@@ -23,7 +23,7 @@ class HouseRequest extends FormRequest
     {
         if (request()->isMethod('POST')) {
             $rules = [
-                'no' => 'required|max:255',
+                'name' => 'required|max:255',
                 'description' => 'required|max:255',
                 'status' => 'required|numeric',
                 'user_id' => 'required|numeric',
@@ -32,7 +32,7 @@ class HouseRequest extends FormRequest
 
         if (request()->isMethod('PUT')) {
             $rules = [
-                'no' => 'required|max:255',
+                'name' => 'required|max:255',
                 'description' => 'required|max:255',
                 'status' => 'required|numeric',
                 'user_id' => 'required|numeric',

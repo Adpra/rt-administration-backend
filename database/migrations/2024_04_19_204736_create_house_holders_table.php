@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('house_holders', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('photo_ktp');
+            $table->string('photo_ktp')->nullable();
             $table->tinyInteger('status')->default(1);
             $table->string('marital_status');
             $table->string('phone');

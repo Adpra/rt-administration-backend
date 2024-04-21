@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API\v1;
 
+use App\Enums\StatusEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\V1\TransactionHistoryRequest;
 use App\Http\Resources\v1\TransactionHistoryResource;
@@ -79,10 +80,10 @@ class TransactionHistoryController extends Controller
                     'status' => $request->status,
                     'amount' => $request->amount,
                     'description' => $request->description,
-                    'house_id' => $request->house_id,
-                    'householder_id' => $user->id,
+                    'house_id' => $user->house->id,
+                    'householder_id' => $request->householder_id,
                     'billing_id' => $request->billing_id,
-                    'next_billing_date' => $request->type == 'tahunan' ? now()->addYear() : null,
+                    'next_billing_date' => $request->type == StatusEnum::TAHUNAN ? now()->addYear() : null,
                     ]
             );
 
@@ -157,8 +158,8 @@ class TransactionHistoryController extends Controller
                 'status' => $request->status,
                 'amount' => $request->amount,
                 'description' => $request->description,
-                'house_id' => $request->house_id,
-                'householder_id' => $user->id,
+                'house_id' => $user->house->id,
+                'householder_id' => $request->householder_id,
                 'billing_id' => $request->billing_id,
                 ]
             );

@@ -10,57 +10,46 @@ use Illuminate\Support\Str;
 
 class MediaHelper
 {
-    public static function isBase64Image($str)
+    public static function handleUploadImage(?string $image, string $directory = 'images', ?string $oldFile = null, $model = null)
     {
-        try {
-            $str = preg_replace('#^data:image/\w+;base64,#i', '', $str);
-
-            $decoded = base64_decode($str, true);
-
-            if (base64_encode($decoded) !== $str) {
-
-                return false;
-            }
-
-            return true;
-        } catch (Exception $e) {
-            // If exception is caught, then it is not a base64 encoded string
-            return false;
+        if ($model && $image === $model->photo_ktp ) {
+            return $model->photo_ktp;
         }
-    }
-
-    public static function handleUploadImage(string|null $image, string $directory = 'images', string $oldFile = null)
-    {
+        
         if (!$image) {
             return null;
         }
 
+       
         if ($oldFile) {
-            // Check if the file already exists
-            if (Storage::disk('public')->exists("$directory", $oldFile)) {
-                // Delete the existing file
-                Storage::disk('public')->delete("$directory/$oldFile");
-            }
+            Storage::disk('public')->delete("$directory/$oldFile");
         }
 
         if (self::isBase64Image($image)) {
-            $base64ImageDecoded = base64_decode(trim(preg_replace('#^data:w+/\w+;base64,#i', '', $image)), true);
+            $base64ImageDecoded = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $image));
 
-            $mimeType = getimagesize($image)['mime'];
-            $extension = explode('/', $mimeType)[1];
-
-            if (!in_array($extension, ['jpeg', 'jpg', 'png'])) {
-                throw new Exception('Invalid image');
+            $mimeType = explode('/', getimagesizefromstring($base64ImageDecoded)['mime'])[1];
+            if (!in_array($mimeType, ['jpeg', 'jpg', 'png'])) {
+                throw new Exception('Invalid image format. Only JPEG, JPG, and PNG are supported.');
             }
 
-            $fileName = Str::random(40) . ".$extension";
+            $fileName = Str::random(40) . ".$mimeType";
 
             Storage::disk('public')->put("$directory/$fileName", $base64ImageDecoded);
 
-            return $fileName;
+            $url = url(Storage::url("$directory/$fileName"));
+
+            return $url;
         }
 
-
         return null;
+    }
+
+    private static function isBase64Image($str)
+    {
+        $str = preg_replace('#^data:image/\w+;base64,#i', '', $str);
+        $decoded = base64_decode($str, true);
+
+        return $decoded !== false && preg_match('%^[a-zA-Z0-9/+]*={0,2}$%', $str);
     }
 }

@@ -24,7 +24,7 @@ class HouseHolderRequest extends FormRequest
         if (request()->isMethod('POST')) {
             $rules = [
                 'name' => 'required|max:255',
-                // 'photo_ktp' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                'photo_ktp' => 'required|image|mimes:jpeg,png,jpg,gif,svg',
                 'status' => 'required|numeric',
                 'marital_status' => 'required|max:255',
                 'phone' => 'required|max:255',
@@ -34,7 +34,6 @@ class HouseHolderRequest extends FormRequest
         if (request()->isMethod('PUT')) {
             $rules = [
                 'name' => 'required|max:255',
-                // 'photo_ktp' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
                 'status' => 'required|numeric',
                 'marital_status' => 'required|max:255',
                 'phone' => 'required|max:255',

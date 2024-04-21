@@ -20,7 +20,7 @@ class HouseResource extends JsonResource
 
         return [
             'id' => $house->id,
-            'no' => $house->no,
+            'name' => $house->name,
             'description' => $house->description,
             'status' => $house->status,
             'user_id' => $house->user_id,

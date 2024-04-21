@@ -75,7 +75,7 @@ class HouseController extends Controller
         try {
             $house = House::create(
                 [
-                    'no' => $request->no,
+                    'name' => $request->name,
                     'description' => $request->description,
                     'status' => $request->status,
                     'user_id' => $request->user_id,
@@ -152,7 +152,7 @@ class HouseController extends Controller
         try {
 
             $house->update([
-                'no' => $request->no,
+                'name' => $request->name,
                 'description' => $request->description,
                 'status' => $request->status,
                 'user_id' => $request->user_id,
