@@ -21,14 +21,14 @@ class HouseHolderResource extends JsonResource
 
         return [
             'id' => $houseHolder->id,
-            'name' => $houseHolder->name,
-            'photo_ktp' => $houseHolder->photo_ktp,
-            'status_name' => $houseHolder->enum->name,
-            'status' => $houseHolder->status,
-            'marital_status' => $houseHolder->marital_status,
-            'phone' => $houseHolder->phone,
-            'house_id' => $houseHolder->house_id,
-            'house_name' => $this->house->name,
+            'name' => $houseHolder->name ?? '-',
+            'photo_ktp' => $houseHolder->photo_ktp ?? '-',
+            'status_name' => $houseHolder->enum->name ?? '-',
+            'status' => $houseHolder->status ?? '-',
+            'marital_status' => $houseHolder->marital_status ?? '-',
+            'phone' => $houseHolder->phone ?? '-',
+            'house_id' => $houseHolder->house_id ?? '-',
+            'house_name' => $this->house->name ?? '-',
         ];
     }
 }

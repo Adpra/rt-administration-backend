@@ -23,11 +23,15 @@ class TransactionHistoryResource extends JsonResource
 
         return [
             'type' => $transactionHistory->type,
+            'type_name' => $transactionHistory->typeStatus ? $transactionHistory->typeStatus->name : TransactionTypeEnum::PENGELUARAN,
             'status' => $transactionHistory->status,
             'status_name' => $transactionHistory->enum->name,
-            'amount' => $transactionHistory->amount,
-            'description' => $transactionHistory->description,
-            'payment_return_date' => $this->when($transactionHistory->type === StatusEnum::TAHUNAN && $transactionHistory->status === TransactionStatusEnum::PAID, $this->created_at->addYear()->format('Y-m-d H:i:s')),
+            'amount' => $transactionHistory->amount ?? '-',
+            'description' => $transactionHistory->description ?? '-',
+            'house' => $transactionHistory->house->name ?? '-',
+            'billing' => $transactionHistory->billing->enum->name ?? TransactionTypeEnum::PENGELUARAN,
+            'householder' => $transactionHistory->householder->name ?? 'Admin',
+            'payment_return_date' => $this->when($transactionHistory->type === StatusEnum::TAHUNAN && $transactionHistory->status === StatusEnum::LUNAS, $this->created_at->addYear()->format('Y-m-d H:i:s')),
             'created_at' => $transactionHistory->created_at?->format('d-m-Y H:i:s'),
             'updated_at' => $transactionHistory->updated_at?->format('d-m-Y H:i:s'),
         ];

@@ -19,6 +19,7 @@ class TransactionHistoryController extends Controller
      */
     public function index(Request $request)
     {
+        $this->authorize('viewAny', TransactionHistory::class);
         $code = Response::HTTP_OK;
         $success = true;
         $message = __('messages.data_list');
@@ -80,7 +81,7 @@ class TransactionHistoryController extends Controller
                     'status' => $request->status,
                     'amount' => $request->amount,
                     'description' => $request->description,
-                    'house_id' => $user->house->id,
+                    'house_id' => $user->house->id ?? null,
                     'householder_id' => $request->householder_id,
                     'billing_id' => $request->billing_id,
                     'next_billing_date' => $request->type == StatusEnum::TAHUNAN ? now()->addYear() : null,

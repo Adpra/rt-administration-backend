@@ -32,4 +32,13 @@ class TransactionHistory extends Model
     public function enum(){
         return $this->belongsTo(Enum::class, 'status', 'id')->where('type', 'transaction_status');
     }
+
+    public function typeStatus(){
+        return $this->belongsTo(Enum::class, 'type', 'id')->where('type', 'type_transaction');
+    }
+
+    public function householder(){
+        return $this->belongsTo(Householder::class);
+    }
+
 }

@@ -13,7 +13,11 @@ class HouseHolderPolicy
      */
     public function viewAny(User $user): bool
     {
-        return true;
+        if ($user->is_admin) {
+            return true;
+        }
+        
+        return $user->house()->exists();
     }
 
     /**

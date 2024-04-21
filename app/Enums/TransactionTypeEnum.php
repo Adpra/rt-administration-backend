@@ -8,4 +8,6 @@ class TransactionTypeEnum
 
     const TAHUNAN = "TAHUNAN";
 
+    const PENGELUARAN = "Pengeluaran";
+
 }

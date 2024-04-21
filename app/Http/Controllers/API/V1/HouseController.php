@@ -187,6 +187,8 @@ class HouseController extends Controller
         $message = __('messages.data_deleted');
 
         try {
+            $house->houseHolders()->delete();
+
             $house->delete();
         } catch (\Throwable $th) {
 

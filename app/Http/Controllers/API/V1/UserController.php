@@ -29,9 +29,12 @@ class UserController extends Controller
 
 
         try {
-            $users = User::query()
-                ->latest('created_at');
-                // ->where('is_admin', '=', auth('api')->user()->is_admin ? true : false);
+            // $users = User::query()
+            //     ->latest('created_at');
+
+            $users = User::whereDoesntHave('house')
+            ->where('is_admin', false)
+            ->latest('created_at');
 
             $users = $users->paginate($perPage, ['*'], 'page', $page);
 

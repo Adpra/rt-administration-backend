@@ -13,7 +13,11 @@ class TransactionHistoryPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        if ($user->is_admin) {
+            return true;
+        }
+        
+        return $user->house()->exists();
     }
 
     /**

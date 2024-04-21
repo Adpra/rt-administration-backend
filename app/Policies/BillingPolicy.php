@@ -13,7 +13,11 @@ class BillingPolicy
      */
     public function viewAny(User $user): bool
     {
-        return true;
+        if ($user->is_admin) {
+            return true;
+        }
+        
+        return $user->house()->exists();
     }
 
     /**
@@ -37,7 +41,7 @@ class BillingPolicy
      */
     public function update(User $user, Billing $billing): bool
     {
-        return $user->is_admin;
+        return false;
     }
 
     /**
