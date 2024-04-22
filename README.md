@@ -33,5 +33,5 @@ I'm using MySQL database version 8.2.0.
 - Email: home1@email.com
 - Password: password
 
-If you want to know more, check the `UserSeeder` file!!
-If there is an error too many attempts log out then log in again!!
+- If you want to know more, check the `UserSeeder` file!!
+- If there is an error too many attempts log out then log in again!!
