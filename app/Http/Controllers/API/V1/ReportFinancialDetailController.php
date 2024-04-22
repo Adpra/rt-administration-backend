@@ -8,6 +8,7 @@ use App\Http\Resources\v1\TransactionHistoryResource;
 use App\Models\TransactionHistory;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class ReportFinancialDetailController extends Controller
 {
@@ -16,24 +17,48 @@ class ReportFinancialDetailController extends Controller
      */
     public function index(Request $request)
     {
-        $month = $request->has('month') ? $request->month : Carbon::now()->month;
-    
-        $incomeHistory = TransactionHistory::where('status', StatusEnum::LUNAS)
+        $this->authorize('viewAny', TransactionHistory::class);
+        
+
+        $code = Response::HTTP_OK;
+        $success = true;
+        $message = __('messages.data_list');
+        $perPage = $request->per_page ?? 15;
+        $page = $request->page ?? 1;
+
+        $user = auth('api')->user();
+
+        try {
+            $month = $request->has('month') ? $request->month : Carbon::now()->month;
+
+            $transactionHistories = TransactionHistory::query()
+            ->where('status', StatusEnum::LUNAS)
             ->whereYear('created_at', Carbon::now()->year)
             ->whereMonth('created_at', $month)
-            ->whereNotIn('type', ['PENGELUARAN'])
-            ->get();
-    
-        $expenseHistory = TransactionHistory::where('status', StatusEnum::LUNAS)
-            ->whereYear('created_at', Carbon::now()->year)
-            ->whereMonth('created_at', $month)
-            ->whereIn('type', ['PENGELUARAN'])
-            ->get();
-    
-        return response()->json([
-            'income_history' => TransactionHistoryResource::collection($incomeHistory),
-            'expense_history' => TransactionHistoryResource::collection($expenseHistory),
-        ]);
+             ->latest('created_at');
+
+            $transactionHistories = $transactionHistories->paginate($perPage, ['*'], 'page', $page);
+
+            return TransactionHistoryResource::collection($transactionHistories)
+                ->additional(
+                    [
+                        'code' => $code,
+                        'success' => $success,
+                        'message' => $message,
+                    ]
+                );
+        } catch (\Throwable $th) {
+            $code = Response::HTTP_INTERNAL_SERVER_ERROR;
+
+            return response()->json(
+                [
+                    'code' => $code,
+                    'success' => false,
+                    'message' => $th->getMessage(),
+                ],
+                $code
+            );
+        }
     }
     
     
