@@ -26,7 +26,7 @@ class HouseRequest extends FormRequest
                 'name' => 'required|max:255',
                 'description' => 'required|max:255',
                 'status' => 'required|numeric',
-                'user_id' => 'required|numeric',
+                // 'user_id' => 'required|numeric',
             ];
         }
 
@@ -35,7 +35,7 @@ class HouseRequest extends FormRequest
                 'name' => 'required|max:255',
                 'description' => 'required|max:255',
                 'status' => 'required|numeric',
-                'user_id' => 'required|numeric',
+                // 'user_id' => 'required|numeric',
             ];
         }
 
