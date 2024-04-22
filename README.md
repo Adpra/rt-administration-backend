@@ -34,4 +34,3 @@ I'm using database version 8.2.0.
 - Password: password
 
 - If you want to know more, check the `UserSeeder` file!!
-- If there is an error too many attempts log out then log in again!!
