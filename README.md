@@ -9,21 +9,28 @@
 
 ## How to install
 
-use php v 8.1 / 8.3
-set .env like .env.example
-composer install
-php artisan migrate —seed
-php artisan storage:link
-php artisan serve
-Mysql
-Im use db v 8.2.0
+**Use PHP version 8.1 / 8.3**
+
+- Set `.env` like `.env.example`
+- Run `composer install`
+- Run `php artisan migrate --seed`
+- Run `php artisan storage:link`
+- Run `php artisan serve`
+
+**MySQL**
+
+I'm using MySQL database version 8.2.0.
 
 ## Login
 
-Admin
-email: admin@email.com
-password: password
-User
-email: home1@email.com
-password: password
-If you want to know more, check the UserSeeder file!!
+**Admin**
+
+- Email: admin@email.com
+- Password: password
+
+**User**
+
+- Email: home1@email.com
+- Password: password
+
+If you want to know more, check the `UserSeeder` file!!
