@@ -19,7 +19,7 @@
 
 **MySQL**
 
-I'm using MySQL database version 8.2.0.
+I'm using database version 8.2.0.
 
 ## Login
 
