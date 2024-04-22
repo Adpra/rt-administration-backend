@@ -38,6 +38,11 @@ class HouseHolderController extends Controller
                 $houseHolders = $houseHolders->where('house_id', $user->house->id);
             }
 
+            if ($request->search) {
+                $searchTerm = strtolower($request->search);
+                $houseHolders = $houseHolders->where('name', 'like', '%' . $searchTerm . '%');
+            }
+            
             $houseHolders = $houseHolders->paginate($perPage, ['*'], 'page', $page);
 
             return HouseHolderResource::collection($houseHolders)

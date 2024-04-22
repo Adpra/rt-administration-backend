@@ -22,13 +22,13 @@ class ReportFinancialSummaryController extends Controller
             $incomeHistory = TransactionHistory::where('status', StatusEnum::LUNAS)
                 ->whereYear('created_at', Carbon::now()->year)
                 ->whereMonth('created_at', $i)
-                ->whereNotIn('type', ['PENGELUARAN'])
+                ->whereNotIn('type', [StatusEnum::PENGELUARAN])
                 ->sum('amount');
     
             $expenseHistory = TransactionHistory::where('status', StatusEnum::LUNAS)
                 ->whereYear('created_at', Carbon::now()->year)
                 ->whereMonth('created_at', $i)
-                ->whereIn('type', ['PENGELUARAN'])
+                ->whereIn('type', [StatusEnum::PENGELUARAN])
                 ->sum('amount');
     
             $currentBalance = $incomeHistory - $expenseHistory;

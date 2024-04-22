@@ -16,6 +16,7 @@ class StatusEnum
     const BULANAN = 10;
     const TAHUNAN = 11;
     const PENGELUARAN = 12;
-
+    const SUDAH_MENIKAH = 'Sudah Menikah';
+    const BELUM_MENIKAH = 'Belum Menikah';
 
 }

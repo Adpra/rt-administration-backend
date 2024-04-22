@@ -25,11 +25,74 @@ class UserSeeder extends Seeder
         ]);
 
         User::query()->create([
-            'name' => 'User',
-            'email' => 'user@email.com',
+            'name' => 'Budi',
+            'email' => 'home1@email.com',
             'is_admin' => RoleEnum::USER,
             'password' => bcrypt('password'),
-            'created_by' => 2
+            'created_by' => 1
+        ]);
+        User::query()->create([
+            'name' => 'Rini',
+            'email' => 'home2@email.com',
+            'is_admin' => RoleEnum::USER,
+            'password' => bcrypt('password'),
+            'created_by' => 1
+        ]);
+         User::query()->create([
+            'name' => 'Siti',
+            'email' => 'home3@email.com',
+            'is_admin' => RoleEnum::USER,
+            'password' => bcrypt('password'),
+            'created_by' => 1
+        ]);
+         User::query()->create([
+            'name' => 'Ahmad',
+            'email' => 'home4@email.com',
+            'is_admin' => RoleEnum::USER,
+            'password' => bcrypt('password'),
+            'created_by' => 1
+        ]);
+         User::query()->create([
+            'name' => 'Dewi',
+            'email' => 'home5@email.com',
+            'is_admin' => RoleEnum::USER,
+            'password' => bcrypt('password'),
+            'created_by' => 1
+        ]);
+         User::query()->create([
+            'name' => 'Joko',
+            'email' => 'home6@email.com',
+            'is_admin' => RoleEnum::USER,
+            'password' => bcrypt('password'),
+            'created_by' => 1
+        ]);
+         User::query()->create([
+            'name' => 'Nita',
+            'email' => 'home7@email.com',
+            'is_admin' => RoleEnum::USER,
+            'password' => bcrypt('password'),
+            'created_by' => 1
+        ]);
+         User::query()->create([
+            'name' => 'Agus',
+            'email' => 'home8@email.com',
+            'is_admin' => RoleEnum::USER,
+            'password' => bcrypt('password'),
+            'created_by' => 1
+        ]);
+         User::query()->create([
+            'name' => 'Dian',
+            'email' => 'home9@email.com',
+            'is_admin' => RoleEnum::USER,
+            'password' => bcrypt('password'),
+            'created_by' => 1
+        ]);
+         User::query()->create([
+            'name' => 'Irfan',
+            'email' => 'home10@email.com',
+            'is_admin' => RoleEnum::USER,
+            'password' => bcrypt('password'),
+            'created_by' => 1
         ]);
 
     }

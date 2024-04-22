@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('houses', function (Blueprint $table) {
             $table->id();
-            $table->string('no');
+            $table->string('name');
             $table->string('description');
             $table->tinyInteger('status')->default(0);
             $table->integer('user_id')->nullable();

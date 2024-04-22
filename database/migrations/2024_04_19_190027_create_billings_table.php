@@ -16,7 +16,7 @@ return new class extends Migration
             $table->tinyInteger('type');
             $table->float('amount');
             $table->string('description')->nullable();
-            $table->tinyInteger('type_of_payment');
+            $table->tinyInteger('status');
             $table->timestamps();
             $table->softDeletes();
         });

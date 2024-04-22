@@ -38,6 +38,10 @@ class TransactionHistoryController extends Controller
                 $transactionHistories = $transactionHistories->where('house_id', $user->house->id);
             }
 
+            if ($request->filter_type) {
+                $transactionHistories = $transactionHistories->where('type', $request->filter_type);
+            }
+
             $transactionHistories = $transactionHistories->paginate($perPage, ['*'], 'page', $page);
 
             return TransactionHistoryResource::collection($transactionHistories)
